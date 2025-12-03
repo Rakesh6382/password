@@ -18,19 +18,11 @@ const transporter = nodemailer.createTransport({
 });
 
 // ======================= REGISTER =======================
-<<<<<<< HEAD
-// ======================= REGISTER =======================
 router.post("/register", async (req, res) => {
   const { fname, email, password, cpassword } = req.body;
 
-  // 👇 Add this line here
   console.log("Received body:", req.body);
 
-=======
-router.post("/register", async (req, res) => {
-  const { fname, email, password, cpassword } = req.body;
-
->>>>>>> 78a02d42fcafe7239de90bd7c907c37b8609d6a1
   if (!fname || !email || !password || !cpassword) {
     return res.status(422).json({ error: "Fill all the details" });
   }
@@ -51,10 +43,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 78a02d42fcafe7239de90bd7c907c37b8609d6a1
 // ======================= LOGIN =======================
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -79,7 +67,7 @@ router.post("/login", async (req, res) => {
     res.cookie("usercookie", token, {
       expires: new Date(Date.now() + 9000000),
       httpOnly: true,
-      secure: false, // true only in production with HTTPS
+      secure: false,
       sameSite: "lax"
     });
 
@@ -114,6 +102,7 @@ router.get("/logout", authenticate, async (req, res) => {
     res.status(500).json({ error: "Logout failed" });
   }
 });
+
 // ======================= SEND PASSWORD RESET LINK =======================
 router.post("/sendpasswordlink", async (req, res) => {
   const { email } = req.body;
@@ -129,25 +118,18 @@ router.post("/sendpasswordlink", async (req, res) => {
       return res.status(401).json({ error: "User not found" });
     }
 
-    // Generate a reset token
     const token = jwt.sign({ _id: userValid._id }, keysecret, {
       expiresIn: "15m"
     });
 
-    // Save token in user record (optional, for validation later)
     userValid.verifytoken = token;
     await userValid.save();
 
-    // Send email with reset link
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
       subject: "Password Reset Link",
-<<<<<<< HEAD
       text: `Click here to reset your password: https://passwordreset-flows.netlify.app/forgotpassword/${userValid._id}/${token}`
-=======
-      text: `Click here to reset your password: http://localhost:3000/forgotpassword/${userValid._id}/${token}`
->>>>>>> 78a02d42fcafe7239de90bd7c907c37b8609d6a1
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -163,6 +145,5 @@ router.post("/sendpasswordlink", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 module.exports = router;
